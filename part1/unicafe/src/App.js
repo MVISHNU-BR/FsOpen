@@ -4,14 +4,30 @@ const Button = (props) => {
   return <button onClick={props.handleClick}>{props.text}</button>
 }
 
+const Statistics = ({ good, neutral, bad }) => {
+  let all = bad + neutral + good;
+  let average = (good - bad) / all;
+  let positive = (good / all) * 100;
+
+  return (
+    <div>
+      <h2>Statistics</h2>
+      <p>good {good}</p>
+      <p>neutral {neutral}</p>
+      <p>bad {bad}</p>
+      <p>all {all}</p>
+      <p>average {average}</p>
+      <p>positive {positive} %</p>
+    </div>
+  )
+
+}
+
 function App() {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  let all = bad + neutral + good;
-  let average = (good - bad) / all;
-  let positive = (good / all) * 100;
 
   return (
     <div><h1>give feedback</h1>
@@ -22,13 +38,7 @@ function App() {
         <Button handleClick={() => setBad(bad + 1)} text={'bad'} />
       </div>
 
-      <h2>Statistics</h2>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {all}</p>
-      <p>average {average}</p>
-      <p>positive {positive} %</p>
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   );
 }
