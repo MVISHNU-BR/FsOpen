@@ -14,16 +14,24 @@ function App() {
     'Programming without extremely heavy use of console.log is like a doctor refusing to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast is to go well.'
   ]
+  const [votes, setVotes] = useState(Array(8).fill(0));
+  const updateVote = () => {
+    const copy = [...votes];
+    copy[selected] += 1;
+    setVotes(copy);
+  }
   const randonAnecdote = () => {
     const randomNumber = Math.floor(Math.random() * 8);
     setSelected(randomNumber)
-
   }
+
   return (
     <div>
       <p>
         {anecdotes[selected]}
       </p>
+      <p>has {votes[selected]} Votes</p>
+      <Button handleClick={updateVote} text={'Vote'}></Button>
       <Button handleClick={randonAnecdote} text={'Next Anecdote'}></Button>
     </div>
   )
