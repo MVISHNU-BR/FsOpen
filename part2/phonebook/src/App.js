@@ -3,14 +3,24 @@ function App() {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas' }
   ])
-
   const [newName, setNewName] = useState('');
+
+  const hasOnPersons = (objetoA, objetoB) => {
+    return JSON.stringify(objetoA) === JSON.stringify(objetoB);
+  }
+
   const handleForm = (event) => {
     event.preventDefault()
-    const newPerson = persons.concat({
+    const newPerson = {
       name: newName
-    })
-    setPersons(newPerson)
+    }
+    const addPerson = persons.concat(newPerson)
+
+    const conditionPersons = persons.some(person => hasOnPersons(person, newPerson))
+    if (conditionPersons) {
+      return alert(`${newName} is already added to phonebook`)
+    }
+    setPersons(addPerson)
     setNewName('')
   }
 
