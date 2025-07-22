@@ -15,6 +15,13 @@ const createPhone = (phone) => {
     })
 }
 
+const editPhone = (id, changedPhone) => {
+    const request = axios.put(`${baseUrl}/${id}`, changedPhone)
+    return request.then((response) => {
+        return response.data;
+    })
+}
+
 const postDelete = (id) => {
     const request = axios.delete(`${baseUrl}/${id}`);
     return request.then((response) => {
@@ -22,5 +29,5 @@ const postDelete = (id) => {
     })
 }
 
-const phoneServices = { getPhones, createPhone, postDelete };
+const phoneServices = { getPhones, createPhone, postDelete, editPhone };
 export default phoneServices;

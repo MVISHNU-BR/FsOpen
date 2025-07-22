@@ -10,6 +10,7 @@ function App() {
   const [newNumber, setNewNumber] = useState('');
   const [search, setSearch] = useState('');
   const [filteredPersons, setFilteredPersons] = useState(persons)
+
   const hasOnPersons = (objetoA, objetoB) => {
     return JSON.stringify(objetoA) === JSON.stringify(objetoB);
   }
@@ -32,14 +33,30 @@ function App() {
       number: newNumber,
     }
 
-    const conditionPersons = persons.some(person => hasOnPersons(person, newPerson))
+    //const conditionPersons = persons.some(person => person.name.toLowerCase(), newPerson.name.toLowerCase())
+    const conditionPersons = persons.some(person => hasOnPersons(person.name, newPerson.name))
+
     if (conditionPersons) {
-      return alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const findPerson = persons.find(person => person.name === newName)
+        const changedPhone = { ...findPerson, number: newNumber }
+
+        phoneServices.editPhone(changedPhone.id, changedPhone).then((updatedPerson) => {
+          setPersons(persons.map(person => person.id !== changedPhone.id ? person : updatedPerson))
+          setNewName('')
+          setNewNumber('')
+
+        })
+          .catch(error => {
+            console.log(error)
+          })
+      }
+      return
     }
 
     phoneServices.createPhone(newPerson).then((person) => {
-      const addPerson = persons.concat(person)
-      setPersons(addPerson)
+      const addedPerson = persons.concat(person)
+      setPersons(addedPerson)
       setNewName('')
       setNewNumber('')
     })
