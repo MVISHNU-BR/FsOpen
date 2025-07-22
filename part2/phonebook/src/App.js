@@ -18,28 +18,34 @@ function App() {
     phoneServices.getPhones().then((initialPhones => {
       setPersons(initialPhones)
     }))
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   useEffect(fethPersons, [])
 
   const handleForm = (event) => {
     event.preventDefault()
-
     const newPerson = {
       name: newName,
       number: newNumber,
     }
-    const addPerson = persons.concat(newPerson)
 
     const conditionPersons = persons.some(person => hasOnPersons(person, newPerson))
     if (conditionPersons) {
       return alert(`${newName} is already added to phonebook`)
     }
-    phoneServices.createPhone(newPerson).then((response) => {
+
+    phoneServices.createPhone(newPerson).then((person) => {
+      const addPerson = persons.concat(person)
       setPersons(addPerson)
       setNewName('')
       setNewNumber('')
     })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   useEffect(() => {
@@ -53,6 +59,18 @@ function App() {
     }
   }, [search, persons]);
 
+  const deletePhone = (id) => {
+    if (window.confirm('Delete phone?')) {
+      phoneServices.postDelete(id).then(() => {
+        const deletePhone = persons.filter(phone => phone.id !== id)
+        setPersons(deletePhone);
+      })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -60,7 +78,7 @@ function App() {
       <h2>Add a new</h2>
       <PersonForm handleForm={handleForm} newName={newName} newNumber={newNumber} handleNewName={(event) => setNewName(event.target.value)} handleNewNumber={(event) => setNewNumber(event.target.value)} />
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} />
+      <Persons filteredPersons={filteredPersons} deletePhone={deletePhone} />
     </div>
   );
 }

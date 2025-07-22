@@ -15,5 +15,12 @@ const createPhone = (phone) => {
     })
 }
 
-const phoneServices = { getPhones, createPhone };
+const postDelete = (id) => {
+    const request = axios.delete(`${baseUrl}/${id}`);
+    return request.then((response) => {
+        return response
+    })
+}
+
+const phoneServices = { getPhones, createPhone, postDelete };
 export default phoneServices;
