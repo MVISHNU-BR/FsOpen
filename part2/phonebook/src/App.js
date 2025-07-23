@@ -48,6 +48,13 @@ function App() {
           setNewNumber('')
         })
           .catch(error => {
+            setMessage(`Information of ${newName} has already been removed from server`)
+            setTimeout(() => {
+              setMessage(null)
+              setPersons(persons.filter(person => person.id !== changedPhone.id));
+              setNewName('')
+              setNewNumber('')
+            }, 5000);
             console.log(error)
           })
       }
