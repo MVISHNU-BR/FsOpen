@@ -3,6 +3,7 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import phoneServices from "./server/phoneServices"
+import Notification from "./components/Notification";
 
 function App() {
   const [persons, setPersons] = useState([])
@@ -10,7 +11,7 @@ function App() {
   const [newNumber, setNewNumber] = useState('');
   const [search, setSearch] = useState('');
   const [filteredPersons, setFilteredPersons] = useState(persons)
-
+  const [message, setMessage] = useState(null)
   const hasOnPersons = (objetoA, objetoB) => {
     return JSON.stringify(objetoA) === JSON.stringify(objetoB);
   }
@@ -45,7 +46,6 @@ function App() {
           setPersons(persons.map(person => person.id !== changedPhone.id ? person : updatedPerson))
           setNewName('')
           setNewNumber('')
-
         })
           .catch(error => {
             console.log(error)
@@ -57,6 +57,10 @@ function App() {
     phoneServices.createPhone(newPerson).then((person) => {
       const addedPerson = persons.concat(person)
       setPersons(addedPerson)
+      setMessage(`Added ${newName}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000);
       setNewName('')
       setNewNumber('')
     })
@@ -91,6 +95,7 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter value={search} handleSearch={(event) => setSearch(event.target.value)} />
       <h2>Add a new</h2>
       <PersonForm handleForm={handleForm} newName={newName} newNumber={newNumber} handleNewName={(event) => setNewName(event.target.value)} handleNewNumber={(event) => setNewNumber(event.target.value)} />
