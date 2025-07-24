@@ -1,6 +1,7 @@
-import React from 'react'
-
-const InfoCountry = ({ countrie, languages }) => {
+const InfoCountry = ({ countrie, languages, weather }) => {
+    if (!weather) {
+        return null
+    }
     return (
         <div>
             <h1>{countrie.name.common}</h1>
@@ -15,6 +16,16 @@ const InfoCountry = ({ countrie, languages }) => {
             </div>
             <div >
                 <img style={{ border: '1px solid red' }} src={countrie.flags.png} alt="Country flag" width="200" height="200" />
+            </div>
+            <div>
+                <h2>Weather in {countrie.capital}</h2>
+                <p>
+                    temperature {weather.main.temp} Celsius
+                </p>
+                <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} alt="Weather icon" />
+                <p>
+                    Wind: {weather.wind.speed} m/s
+                </p>
             </div>
         </div>
     )
