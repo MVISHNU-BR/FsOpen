@@ -6,6 +6,7 @@ function App() {
   const [allCountries, setAllCountries] = useState([])
   const [search, setSearch] = useState('')
   const [filteredCountries, setFilterCountrie] = useState([])
+  const [selectedCountry, setSelectedCountry] = useState('')
 
   useEffect(() => {
     countrieServices.getCountries().then(initialCountries => {
@@ -14,7 +15,6 @@ function App() {
   }, [])
 
   useEffect(() => {
-    console.log(search)
     if (search !== '') {
       const result = allCountries.filter(countrie =>
         countrie.name.common.toLowerCase().startsWith(search.toLowerCase())
@@ -23,13 +23,14 @@ function App() {
     } else {
       setFilterCountrie([])
     }
+    setSelectedCountry('')
   }, [search, allCountries])
 
 
   return (
     <div className="App">
       <Search value={search} handleSearch={(event) => setSearch(event.target.value)} />
-      <CountrieList filteredCountries={filteredCountries} />
+      <CountrieList setSelectedCountry={setSelectedCountry} selectedCountry={selectedCountry} filteredCountries={filteredCountries} />
     </div>
   );
 }

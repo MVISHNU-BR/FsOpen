@@ -1,7 +1,9 @@
 import React from 'react'
+import InfoCountry from './InfoCountry';
 
-const CountrieList = ({ filteredCountries }) => {
+const CountrieList = ({ filteredCountries, selectedCountry, setSelectedCountry }) => {
     const filteringCountries = filteredCountries;
+
     if (filteringCountries.length > 10) {
         return <div>
             Too many matches, specify another filter
@@ -10,25 +12,24 @@ const CountrieList = ({ filteredCountries }) => {
     if (filteredCountries.length === 1) {
         const countrie = filteredCountries[0]
         const languages = Object.keys(countrie.languages)
-        return <div>
-            <h1>{countrie.name.common}</h1>
-            <p>Capital: {countrie.capital}</p>
-            <p>Area: {countrie.area}</p>
-
-            <h2>Languages</h2>
-            <div>
-                <ul>
-                    {languages.map(language => <li key={language}>{countrie.languages[language]}</li>)}
-                </ul>
-            </div>
-            <div >
-                <img style={{ border: '1px solid red' }} src={countrie.flags.png} alt="Country flag" width="200" height="200" />
-            </div>
-        </div>
+        return <InfoCountry countrie={countrie} languages={languages} />
     }
+
+    const handleShowCountry = (countrie) => {
+        setSelectedCountry(countrie);
+    }
+
+    if (selectedCountry) {
+        const languages = Object.keys(selectedCountry.languages);
+        return <InfoCountry countrie={selectedCountry} languages={languages} />
+    }
+
     return (
         <div>
-            <ul>{filteredCountries.map(contries => <li key={contries.name.common}>{contries.name.common}</li>)}</ul>
+            {filteredCountries.map(contrie => <div key={contrie.name.common}>
+                {contrie.name.common} <button onClick={() => handleShowCountry(contrie)} >Show</button>
+            </div>
+            )}
         </div>
     )
 }
