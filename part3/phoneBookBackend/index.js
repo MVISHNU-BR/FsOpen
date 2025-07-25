@@ -54,8 +54,26 @@ app.get('/api/persons/:id', (request, response) => {
     }
 })
 
+const testName = (name) => {
+    return persons.find(person => person.name.toLowerCase() === name.toLowerCase())
+}
+
 app.post('/api/persons', (request, response) => {
     const body = request.body;
+    console.log(body)
+
+    if (!body.name || !body.number) {
+        return response.status(400).json({
+            error: 'Name or Number are missing',
+        })
+    }
+    if (testName(body.name)) {
+        console.log(testName(body.name))
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+
+    }
 
     const person = {
         name: body.name,
