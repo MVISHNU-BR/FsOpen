@@ -1,5 +1,9 @@
 const express = require('express')
 const app = express()
+
+app.use(express.json())
+
+
 let persons = [
     {
         "id": 1,
@@ -23,6 +27,11 @@ let persons = [
     }
 ]
 
+const randonId = () => {
+    const id = Math.floor(Math.random(0, 99999) * 10000);
+    return id.toString();
+}
+
 app.get('/', (request, response) => {
     const date = new Date()
     response.send(`
@@ -43,6 +52,19 @@ app.get('/api/persons/:id', (request, response) => {
     } else {
         response.status(404).end()
     }
+})
+
+app.post('/api/persons', (request, response) => {
+    const body = request.body;
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: randonId()
+    }
+
+    persons = persons.concat(person)
+    response.json(person)
 })
 
 app.delete('/api/persons/:id', (request, response) => {
