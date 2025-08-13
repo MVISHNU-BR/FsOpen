@@ -30,45 +30,44 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id);
-    const person = persons.find(person => person.id === id);
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
-})
+// app.get('/api/persons/:id', (request, response) => {
+//     const id = Number(request.params.id);
+//     const person = persons.find(person => person.id === id);
+//     if (person) {
+//         response.json(person)
+//     } else {
+//         response.status(404).end()
+//     }
+// })
 
-const testName = (name) => {
-    return persons.find(person => person.name.toLowerCase() === name.toLowerCase())
-}
+// const testName = (name) => {
+//     return persons.find(person => person.name.toLowerCase() === name.toLowerCase())
+// }
 
 app.post('/api/persons', (request, response) => {
     const body = request.body;
-    console.log(body)
 
     if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'Name or Number are missing',
         })
     }
-    if (testName(body.name)) {
-        console.log(testName(body.name))
-        return response.status(400).json({
-            error: 'name must be unique'
-        })
+    // if (testName(body.name)) {
+    //     console.log(testName(body.name))
+    //     return response.status(400).json({
+    //         error: 'name must be unique'
+    //     })
 
-    }
+    // }
 
-    const person = {
+    const person = new Person({
         name: body.name,
         number: body.number,
-        id: randonId()
-    }
+    })
 
-    persons = persons.concat(person)
-    response.json(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson);
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
