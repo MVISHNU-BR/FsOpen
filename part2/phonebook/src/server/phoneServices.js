@@ -10,7 +10,7 @@ const getPhones = () => {
 
 const createPhone = (phone) => {
     const request = axios.post(baseUrl, phone)
-    return request.then((response) => {
+    return request.then(response => {
         return response.data;
     })
 }

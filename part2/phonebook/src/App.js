@@ -61,7 +61,8 @@ function App() {
       return
     }
 
-    phoneServices.createPhone(newPerson).then((person) => {
+    phoneServices.createPhone(newPerson).then(person => {
+      console.log('por que estou aqui')
       const addedPerson = persons.concat(person)
       setPersons(addedPerson)
       setMessage(`Added ${newName}`)
@@ -70,10 +71,12 @@ function App() {
       }, 5000);
       setNewName('')
       setNewNumber('')
+    }).catch(error => {
+      setMessage(error.response.data.error)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000);
     })
-      .catch(error => {
-        console.log(error)
-      })
   }
 
   useEffect(() => {
