@@ -13,10 +13,12 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 app.get('/', (request, response) => {
     const date = new Date()
-    response.send(`
-        <p>Phonebook has info for ${persons.length} people
-        <p>${date}</p>
-        `)
+    Person.find({}).then(persons => {
+        response.send(`
+            <p>Phonebook has info for ${persons.length} people
+            <p>${date}</p>
+            `)
+    })
 })
 
 app.get('/api/persons', (request, response) => {
@@ -24,6 +26,17 @@ app.get('/api/persons', (request, response) => {
         response.json(persons)
     })
 })
+
+app.get('/api/persons/:id', (request, response, next) => {
+    Person.findById(request.params.id)
+        .then(person => {
+            response.json(person)
+        })
+        .catch(error => {
+            next(error)
+        })
+})
+
 
 app.put('/api/persons/:id', (request, response, next) => {
 
@@ -59,15 +72,12 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
-    const id = Number(request.params.id);
     Person.findByIdAndDelete(request.params.id)
         .then(result => {
             response.status(204).end();
         })
         .catch(error => next(error))
 })
-
-
 
 
 const errorHandler = (error, request, response, next) => {
