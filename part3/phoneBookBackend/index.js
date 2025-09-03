@@ -7,7 +7,7 @@ const Person = require('./models/person');
 app.use(express.json())
 app.use(cors())
 app.use(express.static('build'))
-morgan.token('body', (request, response) => JSON.stringify(request.body))
+morgan.token('body', (request) => JSON.stringify(request.body))
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
@@ -74,7 +74,7 @@ app.post('/api/persons', (request, response, next) => {
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndDelete(request.params.id)
         .then(result => {
-            response.status(204).end();
+            response.status(204).end(result);
         })
         .catch(error => next(error))
 })
