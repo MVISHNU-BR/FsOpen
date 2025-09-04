@@ -1,0 +1,22 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "description": "blog list backend",
+  "license": "MIT",
+  "author": "vishnu jneesh",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "test"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.0"
+  }
+}
