@@ -1,6 +1,6 @@
 const listHelper = require('../utils/list_helper');
 const totalLikes = require('../utils/list_helper').totalLikes;
-
+const favoriteBlog = require('../utils/list_helper').favoriteBlog
 test('dummy returns one', () => {
     const blogs = [];
 
@@ -89,3 +89,81 @@ describe('total likes', () => {
 
 
 });
+
+describe('most liked blog', () => {
+    const blogListWithZeroBlogs = []
+    const blogListWithOneBlog = [
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 12
+        }
+    ]
+    const blogListWithTenBlogs = [
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 8
+        },
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 3
+        },
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 2
+        },
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 5
+        },
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 4
+        },
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 12
+        },
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 11
+        },
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 10
+        },
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 2
+        },
+        {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            likes: 1
+        }
+    ]
+    test('blogList with zero blogs', () => {
+        const result = favoriteBlog(blogListWithZeroBlogs);
+        expect(result).toEqual([]);
+    })
+
+    test('blogList with one blog with 12 likes;', () => {
+        const result = favoriteBlog(blogListWithOneBlog)
+        console.log('RESULTADO')
+        console.log(result[0])
+        expect(result).toEqual(blogListWithOneBlog)
+    })
+    test('blogList with 10 blogs with most liked blog 12 likes', () => {
+        const result = favoriteBlog(blogListWithTenBlogs)
+        expect(result).toEqual(blogListWithOneBlog)
+    })
+})
