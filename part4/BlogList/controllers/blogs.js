@@ -19,9 +19,13 @@ blogsRouter.get('/', async (request, response, next) => {
     }
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', async (request, response, next) => {
+    const newBlog = {
+        ...request.body,
+        likes: request.body.likes ?? -0
+    }
     try {
-        const blog = new Blog(request.body);
+        const blog = new Blog(newBlog);
         const savedBlog = await blog.save();
         response.status(201).json(savedBlog);
     } catch (exception) {

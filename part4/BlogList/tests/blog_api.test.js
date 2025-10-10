@@ -55,6 +55,23 @@ test('post blog on api/blogs', async () => {
 
 })
 
+test("post a blogpost with no likes", async () => {
+    const blogPost = {
+        "title": "007 new Movies for 2029",
+        "author": "John",
+        "url": "oo7newMovies",
+    }
+
+    const response = await api
+        .post('/api/blogs')
+        .send(blogPost)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    expect(response.body.likes).toBe(0);
+
+})
+
 
 
 afterAll(async () => {
