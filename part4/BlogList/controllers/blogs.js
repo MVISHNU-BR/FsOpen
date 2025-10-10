@@ -24,6 +24,11 @@ blogsRouter.post('/', async (request, response, next) => {
         ...request.body,
         likes: request.body.likes ?? -0
     }
+
+    if (!newBlog.title || !newBlog.url) {
+        return response.status(400).json({ error: 'No Title or URL send.' });
+    }
+
     try {
         const blog = new Blog(newBlog);
         const savedBlog = await blog.save();

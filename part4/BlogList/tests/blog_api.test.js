@@ -72,6 +72,20 @@ test("post a blogpost with no likes", async () => {
 
 })
 
+test("post a blogpost with no title and url expect to return 400", async () => {
+    const blogPost = {
+        "author": "John",
+        "likes": 3
+    }
+
+    const response = await api
+        .post('/api/blogs')
+        .send(blogPost)
+        .expect(400)
+        .expect("Content-Type", /application\/json/)
+
+    expect(response.body.error).toBe("No Title or URL send.")
+})
 
 
 afterAll(async () => {
