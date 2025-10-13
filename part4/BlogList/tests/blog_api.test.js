@@ -138,8 +138,8 @@ describe('When a Blog are edited or deleted', () => {
             .delete(`/api/blogs/${BlogToDelete.body[0].id}`)
             .expect(204)
     })
-    test('if a blogpost are updated', async () => {
 
+    test('if a blogpost are updated', async () => {
         const infoToUpdate = {
             "author": "Walter Due",
             "likes": 33,
@@ -153,6 +153,18 @@ describe('When a Blog are edited or deleted', () => {
             .expect(200)
     })
 
+    test('if likes are change in update blog', async () => {
+        const bloptToUpdate = await api.get('/api/blogs');
+        const likes = { likes: 300 }
+        const result = await api
+            .put(`/api/blogs/${bloptToUpdate.body[0].id}`)
+            .send(likes)
+            .expect(200)
+
+        console.log(result.body)
+        expect(result.body.likes).toEqual(300)
+
+    })
 
 })
 
