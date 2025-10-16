@@ -1,6 +1,16 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken');
+
+const getTokenFrom = request => {
+    const authorization = request.get('authorization')
+    if (authorization && authorization.startsWith("Bearer ")) {
+        return authorization.replace('Bearer ', '')
+    }
+    return null
+}
+
 
 blogsRouter.get('/test', async (request, response, next) => {
     try {
@@ -20,13 +30,20 @@ blogsRouter.get('/', async (request, response, next) => {
 })
 
 blogsRouter.post('/', async (request, response, next) => {
-    const user = await User.findOne({}, { id: 0 })
+
+    const decodedToken = jwt.verify(getTokenFrom(request),
+        process.env.SECRET)
+    if (!decodedToken.id) {
+        return response.status(401).json({ error: "token invalid" })
+    }
+
+    const user = await User.findById(decodedToken.id)
+
     const newBlog = {
         ...request.body,
         likes: request.body.likes ?? 0,
         user: user._id
     }
-    console.log(newBlog)
 
     if (!newBlog.title || !newBlog.url) {
         return response.status(400).json({ error: 'No Title or URL send.' });
