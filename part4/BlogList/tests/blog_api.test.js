@@ -3,8 +3,7 @@ const supertest = require('supertest');
 const app = require('../app');
 const api = supertest(app);
 // const blogsHelper = require('./list_helper.test')
-const Note = require('../models/blog');
-
+const Blog = require('../models/blog');
 const listWithSixBlog = [
     {
         title: "React patterns",
@@ -43,10 +42,27 @@ const listWithSixBlog = [
         likes: 2,
     }
 ]
+
+let userToken;
+
 beforeEach(async () => {
-    await Note.deleteMany({})
-    await Note.insertMany(listWithSixBlog)
+    await Blog.deleteMany({})
+    await Blog.insertMany(listWithSixBlog)
+
+    const user = {
+        "username": "root",
+        "password": "sekret"
+    }
+
+    const login = await api
+        .post('/api/login')
+        .send(user)
+        .expect(200)
+
+    userToken = login.body.token;
 })
+
+
 
 describe('when there is initially some blogs are returned', () => {
 
@@ -83,9 +99,9 @@ describe('when a blog are posted', () => {
         }
 
         const numberOfBlogs = listWithSixBlog.length;
-
         const response = await api
             .post('/api/blogs')
+            .set('Authorization', `bearer ${userToken}`)
             .send(blog)
             .expect(201)
 
@@ -108,6 +124,7 @@ describe('when a blog are posted', () => {
 
         const response = await api
             .post('/api/blogs')
+            .set('Authorization', `bearer ${userToken}`)
             .send(blogPost)
             .expect(201)
 
@@ -123,19 +140,51 @@ describe('when a blog are posted', () => {
 
         const response = await api
             .post('/api/blogs')
+            .set('Authorization', `bearer ${userToken}`)
             .send(blogPost)
             .expect(400)
 
         expect(response.body.error).toBe("No Title or URL send.")
     })
+
+    test('a unauthorized user test post blog', async () => {
+        const blogPost = {
+            "title": "007 new Movies for 2029",
+            "author": "John",
+            "url": "oo7newMovies",
+        }
+
+        const result = await api
+            .post('/api/blogs')
+            .send(blogPost)
+            .expect(401)
+            .expect("Content-Type", /application\/json/)
+        console.log(result)
+    })
 })
 
 describe('When a Blog are edited or deleted', () => {
     test('A blog post are deleted with sucsess', async () => {
+        // change this logic (extreme go horse programming)
+        const blog = {
+            "title": "007 new Movies",
+            "author": "John Due",
+            "url": "oo7newMovies",
+            "likes": 3
+        }
 
-        const BlogToDelete = await api.get('/api/blogs');
         await api
-            .delete(`/api/blogs/${BlogToDelete.body[0].id}`)
+            .post('/api/blogs')
+            .set('Authorization', `bearer ${userToken}`)
+            .send(blog)
+            .expect(201)
+
+        const blogToDelete = await api.get('/api/blogs');
+        const lastBlog = blogToDelete.body.length;
+        console.log(lastBlog)
+        await api
+            .delete(`/api/blogs/${blogToDelete.body[6].id}`)
+            .set('Authorization', `bearer ${userToken}`)
             .expect(204)
     })
 
@@ -149,6 +198,7 @@ describe('When a Blog are edited or deleted', () => {
         const bloptToUpdate = await api.get('/api/blogs');
         await api
             .put(`/api/blogs/${bloptToUpdate.body[0].id}`)
+            .set('Authorization', `bearer ${userToken}`)
             .send(infoToUpdate)
             .expect(200)
     })
@@ -158,6 +208,7 @@ describe('When a Blog are edited or deleted', () => {
         const likes = { likes: 300 }
         const result = await api
             .put(`/api/blogs/${bloptToUpdate.body[0].id}`)
+            .set('Authorization', `bearer ${userToken}`)
             .send(likes)
             .expect(200)
 
@@ -170,5 +221,6 @@ describe('When a Blog are edited or deleted', () => {
 
 
 afterAll(async () => {
-    await mongoose.connection.close()
+    await
+        await mongoose.connection.close()
 })

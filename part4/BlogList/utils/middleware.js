@@ -21,8 +21,7 @@ const errorHandler = (error, request, response, next) => {
     } else if (error.name === 'ValidationError') {
         return response.status(400).json({ error: error.message })
     } else if (error.name === 'JsonWebTokenError') {
-        console.log('here?')
-        return response.status(400).json({ error: error.message })
+        return response.status(401).json({ error: 'token invalid' })
     }
     next()
 }
@@ -38,9 +37,8 @@ const tokenExtractor = (request, response, next) => {
 }
 
 const userExtractor = async (request, response, next) => {
-
     if (!request.token) {
-        return next()
+        return response.status(401).json({ error: 'token missing' })
     }
 
     try {
